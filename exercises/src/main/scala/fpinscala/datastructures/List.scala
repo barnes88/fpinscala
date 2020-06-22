@@ -78,11 +78,22 @@ object List { // `List` companion object. Contains functions for creating and wo
         else l
     }
 
-  def init[A](l: List[A]): List[A] = ???
+  def init[A](l: List[A]): List[A] = 
+    l match {
+      case Cons(h,t) => Cons(h,init(t))
+      case Cons(_,Nil) => Nil
+    }
 
-  def length[A](l: List[A]): Int = ???
+  def length[A](l: List[A]): Int = 
+    foldRight(l, 0)((_,count) => count + 1)
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+ @annotation.tailrec
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = 
+    l match {
+      case Nil => z
+      case Cons(xs, x) => foldLeft(x, f(z, xs))(xs)
+    }
 
-  def map[A,B](l: List[A])(f: A => B): List[B] = ???
+  def map[A,B](l: List[A])(f: A => B): List[B] =
+    foldRight(l, Nil:List[B])((h,t) => Cons(f(h),t))
 }
